@@ -22,6 +22,17 @@ module.exports = {
 }
 ```
 
+in `.prettierrc.js`
+
+``` js
+const prettier = require('./node_modules/eslint-plugin-airbnb-react/prettier')
+
+module.exports = {
+  ...prettier,
+}
+
+```
+
 ## stylelint-plugin-standard
 
 ``` bash
