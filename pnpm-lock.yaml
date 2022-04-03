@@ -6,7 +6,7 @@ importers:
     specifiers:
       '@commitlint/cli': ^16.2.3
       '@commitlint/config-conventional': ^16.2.1
-      eslint-plugin-airbnb-react: 1.0.0-bate.4
+      eslint-plugin-airbnb-react: 1.0.1
       husky: ^7.0.4
       lint-staged: ^12.3.7
       stylelint-plugin-standard: ^1.0.2
