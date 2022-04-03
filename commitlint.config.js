@@ -14,4 +14,6 @@
  @example fix: 修复某某功能
  */
 
-module.exports = { extends: ['@commitlint/config-conventional'] };
+module.exports = {
+  extends: ['@commitlint/config-conventional'],
+}

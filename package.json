@@ -14,20 +14,23 @@
   "bugs": {
     "url": "https://github.com/algesthesiah/code-standard-config/issues"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint",
-      "commit-msg": "node scripts/verifyCommit.js"
-    }
-  },
   "homepage": "https://github.com/algesthesiah/code-standard-config#readme",
   "devDependencies": {
     "@commitlint/cli": "^16.2.3",
     "@commitlint/config-conventional": "^16.2.1",
-    "eslint-plugin-airbnb-react": "^1.0.0",
-    "husky": "^7.0.4"
+    "eslint-plugin-airbnb-react": "1.0.0-bate.4",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.7",
+    "stylelint-plugin-standard": "^1.0.2",
+    "typescript": "^4.6.3"
   },
   "scripts": {
     "prepare": "husky install"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": "eslint --fix",
+    "*.stylelintignore": "stylelint --fix",
+    "*.css": "stylelint --allow-empty-input",
+    "*.scss": "stylelint --syntax=scss --allow-empty-input"
   }
 }
