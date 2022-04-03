@@ -1,0 +1,36 @@
+{
+  "name": "eslint-plugin-airbnb-react",
+  "version": "1.0.0",
+  "description": "custom ESLint config, for react and ts, depends on airbnb、plugin-react、plugin-prettier and so on",
+  "repository": "https://github.com/algesthesiah/eslint-plugin-airbnb-react",
+  "main": "index.js",
+  "keywords": [
+    "eslint",
+    "eslintconfig",
+    "config",
+    "airbnb",
+    "javascript",
+    "styleguide",
+    "react",
+    "ts",
+    "custom"
+  ],
+  "author": "algesthesiah https://github.com/algesthesiah",
+  "license": "MIT",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.0",
+    "eslint": "^7.28.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-eslint-plugin": "^4.0.1",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-security": "^1.4.0"
+  }
+}

@@ -1,1 +1,1 @@
-# code-standards
+# code-standard-config
