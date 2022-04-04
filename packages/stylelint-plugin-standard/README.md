@@ -1,21 +1,14 @@
-# eslint-plugin-airbnb-react
+## stylelint-plugin-standard
 
-Custom ESLint config, for react and ts, depends on airbnb、plugin-react、plugin-prettier and so on
+``` bash
+npm i stylelint-plugin-standard --save-dev
 
-# usage
-
-## install
-
-```bash
-npm i eslint-plugin-airbnb-react -D
 ```
 
-## use config
+in `.stylelintrc.js`
 
-```js
-//file .eslintrc.js
-{
-  ...
-  extends: ['eslint-plugin-airbnb-react'],
+``` js
+module.exports = {
+  extends: ['stylelint-plugin-standard'],
 }
 ```
