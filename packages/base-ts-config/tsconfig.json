@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "composite": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "strict": true,
+    "suppressImplicitAnyIndexErrors": true,
+    // 运行目标环境期望支持的 javascript 版本 https://www.typescriptlang.org/zh/tsconfig#target
+    "target": "es2019",
+    // 启动 typescript 内置的 *.d.ts 类型定义 https://www.typescriptlang.org/zh/tsconfig#lib
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    // 强制区分文件大小写
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "jsx": "react"
+  }
+}

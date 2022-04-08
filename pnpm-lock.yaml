@@ -6,6 +6,7 @@ importers:
     specifiers:
       '@commitlint/cli': ^16.2.3
       '@commitlint/config-conventional': ^16.2.1
+      base-ts-config: workspace:^1.0.0
       eslint-plugin-airbnb-react: workspace:~1.0.4
       husky: ^7.0.4
       lint-staged: ^12.3.7
@@ -13,6 +14,7 @@ importers:
     devDependencies:
       '@commitlint/cli': 16.2.3
       '@commitlint/config-conventional': 16.2.1
+      base-ts-config: link:packages/base-ts-config
       eslint-plugin-airbnb-react: link:packages/eslint-plugin-airbnb-react
       husky: 7.0.4
       lint-staged: 12.3.7
