@@ -1,7 +1,6 @@
 {
   "extends": "base-ts-config",
   "compilerOptions": {
-    "outDir": "dist",
     "suppressImplicitAnyIndexErrors": true
   },
   "include": ["packages/*/*"],
