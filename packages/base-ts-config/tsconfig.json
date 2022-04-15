@@ -23,6 +23,5 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "jsx": "react",
-    "rootDir": "./"
   }
 }
