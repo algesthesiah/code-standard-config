@@ -1,6 +1,6 @@
 {
   "name": "base-ts-config",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "base ts config",
   "repository": "https://github.com/algesthesiah/code-standard-config",
   "main": "tsconfig.json",

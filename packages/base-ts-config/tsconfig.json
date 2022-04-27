@@ -6,15 +6,13 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "noImplicitAny": true,
     "noImplicitReturns": true,
     "preserveConstEnums": true,
     "removeComments": false,
     "sourceMap": true,
     "strict": true,
-    "suppressImplicitAnyIndexErrors": true,
     // 运行目标环境期望支持的 javascript 版本 https://www.typescriptlang.org/zh/tsconfig#target
-    "target": "es2019",
+    "target": "esnext",
     // 启动 typescript 内置的 *.d.ts 类型定义 https://www.typescriptlang.org/zh/tsconfig#lib
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": false,
@@ -23,5 +21,12 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "jsx": "react",
+    "useDefineForClassFields": false,
+    "noUnusedParameters": false,
+    "noUnusedLocals": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "noEmit": true
   }
 }
