@@ -16,6 +16,9 @@
     // 启动 typescript 内置的 *.d.ts 类型定义 https://www.typescriptlang.org/zh/tsconfig#lib
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": false,
+    // 忽略所有文件类型检测
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     // 强制区分文件大小写
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
