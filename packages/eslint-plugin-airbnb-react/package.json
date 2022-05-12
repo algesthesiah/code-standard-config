@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-airbnb-react",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "custom ESLint config, for react and ts, depends on airbnb、plugin-react、plugin-prettier and so on",
   "repository": "https://github.com/algesthesiah/eslint-plugin-airbnb-react",
   "main": "index.js",

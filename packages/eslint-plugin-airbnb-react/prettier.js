@@ -11,7 +11,7 @@ module.exports = {
   jsxSingleQuote: false, // 在 JSX 中使用单引号而不是双引号
   trailingComma: 'es5', // 尾后逗号，设置为 "es5" 有利于 git diff，了解更多 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Trailing_commas
   bracketSpacing: true, // 对象左右两边添加空格
-  jsxBracketSameLine: false, // 如果为 true，则将多行 jsx 元素的 `>` 放在最后一行的末尾，而不是单独放在下一行
+  bracketSameLine: false, // 如果为 true，则将多行 jsx 元素的 `>` 放在最后一行的末尾，而不是单独放在下一行
   arrowParens: 'avoid', // 当箭头函数仅有一个参数时加上括号
   endOfLine: 'lf',
 }
