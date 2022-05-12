@@ -25,7 +25,6 @@
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": "eslint --fix",
     "*.stylelintignore": "stylelint --fix",
-    "*.css": "stylelint --allow-empty-input",
-    "*.scss": "stylelint --syntax=scss --allow-empty-input"
+    "*.css": "stylelint --allow-empty-input"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "stylelint-plugin-standard",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "custom Stylelint config, for react and ts",
   "repository": "https://github.com/algesthesiah/code-standard-config",
   "main": "index.js",
@@ -17,7 +17,6 @@
     "stylelint-config-standard": "^22.0.0",
     "stylelint-declaration-block-no-ignored-properties": "^2.3.0",
     "stylelint-no-unsupported-browser-features": "^5.0.1",
-    "stylelint-order": "^4.1.0",
-    "stylelint-scss": "^3.19.0"
+    "stylelint-order": "^4.1.0"
   }
 }
