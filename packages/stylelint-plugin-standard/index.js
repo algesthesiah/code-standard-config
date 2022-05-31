@@ -1,4 +1,3 @@
-// https://stylelint.io/user-guide/rules/list
 module.exports = {
   extends: [
     'stylelint-config-standard',
@@ -16,7 +15,6 @@ module.exports = {
         ignorePseudoClasses: ['global', 'local', 'fist-child'],
       },
     ],
-    // 拓展可用的 @ 修饰符
     'at-rule-no-unknown': [
       true,
       {
@@ -45,10 +43,7 @@ module.exports = {
         ],
       },
     ],
-    // 不限制
     'font-family-no-missing-generic-family-keyword': null,
-    // 对 JS 中的模版模版字符串支持度不好
-    'function-calc-no-invalid': null,
     'indentation': 2,
     'block-no-empty': true,
     'declaration-colon-space-after': 'always-single-line',
