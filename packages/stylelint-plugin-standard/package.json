@@ -1,6 +1,6 @@
 {
   "name": "stylelint-plugin-standard",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "custom Stylelint config, for react and ts",
   "repository": "https://github.com/algesthesiah/code-standard-config",
   "main": "index.js",
