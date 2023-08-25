@@ -4,7 +4,7 @@
     "composite": true,
     "declaration": true,
     "esModuleInterop": true,
-    "module": "esnext",
+    "module": "ES6",
     "moduleResolution": "node",
     "noImplicitReturns": true,
     "preserveConstEnums": true,
@@ -12,7 +12,7 @@
     "sourceMap": true,
     "strict": true,
     // 运行目标环境期望支持的 javascript 版本 https://www.typescriptlang.org/zh/tsconfig#target
-    "target": "esnext",
+    "target": "ES6",
     // 启动 typescript 内置的 *.d.ts 类型定义 https://www.typescriptlang.org/zh/tsconfig#lib
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": false,
