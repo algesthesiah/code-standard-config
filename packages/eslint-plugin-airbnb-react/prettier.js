@@ -2,7 +2,7 @@
 
 module.exports = {
   htmlWhitespaceSensitivity: 'ignore', // 格式化完整的换行
-  printWidth: 120, // 指定每行代码的最佳长度， 超出长度则换行。
+  printWidth: 120, // 指定每行代码的最佳长度，超出长度则换行。
   tabWidth: 2, // 每个制表符占用的空格数
   useTabs: false, // 是否使用制表符（tab）缩进
   semi: false, // 是否在每行末尾添加分号

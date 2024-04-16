@@ -1,8 +1,5 @@
 {
   "extends": "base-ts-config",
-  "compilerOptions": {
-    "suppressImplicitAnyIndexErrors": true
-  },
   "include": ["packages/*/*"],
   "exclude": ["node_modules", "build", "scripts", "dist"]
 }

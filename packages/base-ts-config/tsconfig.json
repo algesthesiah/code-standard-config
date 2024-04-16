@@ -1,35 +1,36 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "composite": true,
     "declaration": true,
     "esModuleInterop": true,
-    "module": "ES6",
-    "moduleResolution": "node",
-    "noImplicitReturns": true,
     "preserveConstEnums": true,
     "removeComments": false,
     "sourceMap": true,
     "strict": true,
-    // 运行目标环境期望支持的 javascript 版本 https://www.typescriptlang.org/zh/tsconfig#target
-    "target": "ES6",
-    // 启动 typescript 内置的 *.d.ts 类型定义 https://www.typescriptlang.org/zh/tsconfig#lib
-    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": false,
-    // 忽略所有文件类型检测
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    // 强制区分文件大小写
-    "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "jsx": "react-jsx",
     "useDefineForClassFields": false,
     "noUnusedParameters": false,
     "noUnusedLocals": false,
-    "suppressImplicitAnyIndexErrors": true,
     "noImplicitAny": false,
     "noImplicitThis": false,
-    "noEmit": true
+    "noEmit": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "module": "NodeNext",
+    "target": "ES2015",
+    "moduleResolution": "Bundler",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "forceConsistentCasingInFileNames": false,
+    "composite": false,
+    "noImplicitReturns": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["node", "vite/client"]
   }
 }

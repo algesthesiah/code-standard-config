@@ -3,7 +3,6 @@ module.exports = {
     'stylelint-config-standard',
     'stylelint-config-css-modules',
     'stylelint-config-rational-order',
-    'stylelint-config-prettier',
     'stylelint-no-unsupported-browser-features',
   ],
   ignoreFiles: ['**/*.js', '**/*.jsx', '**/*.tsx', '**/*.ts'],
@@ -45,7 +44,7 @@ module.exports = {
     ],
     'font-family-no-missing-generic-family-keyword': null,
     'indentation': 2,
-    'block-no-empty': true,
+    'block-no-empty': null,
     'declaration-colon-space-after': 'always-single-line',
     'declaration-colon-space-before': 'never',
     'no-invalid-double-slash-comments': true,
@@ -70,5 +69,6 @@ module.exports = {
     'no-descending-specificity': null,
     'no-duplicate-selectors': null,
     'custom-property-pattern': null,
+    'selector-class-pattern': null,
   },
 }

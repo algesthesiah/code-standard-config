@@ -48,16 +48,16 @@ module.exports = {
     'no-unused-expressions': ['error', { allowShortCircuit: true, allowTernary: true }],
     // 没有必要限制使用解构还是直接取值
     'prefer-destructuring': 'off',
-    // 这个规则要求 import { someNamed } from 'someModule' 时 someModule 里有 “export someNamed” 的导出
+    // 这个规则要求 import { someNamed } from 'someModule' 时 someModule 里有“export someNamed”的导出
     // 但是我们项目可以用这种方式引入 export default 出来的对象里面的某个属性，所以不做限制
     'import/named': 'off',
     // airbnb-base 中推荐 class 中的普通方法都必须使用过 this，如果没有使用 this 就改为静态方法，这个我们暂不做要求
     'class-methods-use-this': 'off',
-    // 关闭 “不修改函数的参数”，这种情况在我们的项目中很多，暂时不做要求
+    // 关闭“不修改函数的参数”，这种情况在我们的项目中很多，暂时不做要求
     'no-param-reassign': 'off',
-    // 关闭 “函数要保证任何情况下都有返回值”，这种情况在我们的项目中很多，贸然加 return 可能会导致 BUG
+    // 关闭“函数要保证任何情况下都有返回值”，这种情况在我们的项目中很多，贸然加 return 可能会导致 BUG
     'consistent-return': 'off',
-    // 关闭 “a 标签必须要有 href 属性”，有些人用 a 标签纯粹是为了让文字有主题色
+    // 关闭“a 标签必须要有 href 属性”，有些人用 a 标签纯粹是为了让文字有主题色
     'jsx-a11y/anchor-is-valid': 'off',
     // airbnb-base 中对 for in，for of，with 等语法做了严格限制
     'no-restricted-syntax': 'off',
@@ -66,7 +66,7 @@ module.exports = {
     'react/jsx-pascal-case': 'off',
     // 关闭 "不允许嵌套三元运算"，基本都是两个三元运算叠加在一起，并不是非常难以阅读，暂时不做要求
     'no-nested-ternary': 'off',
-    // 关闭 “一个文件中不允许出现的多个 class“，有现存代码这么写，不便于调整，暂时不改
+    // 关闭“一个文件中不允许出现的多个 class“，有现存代码这么写，不便于调整，暂时不改
     'max-classes-per-file': 'off',
     'import/prefer-default-export': 'off',
     'no-return-assign': 'off',
@@ -110,7 +110,7 @@ module.exports = {
     // 检查 Hook 规则（1、不在循环，条件或嵌套函数中调用 Hook 2、不在普通的 JavaScript 函数中调用 Hook）
     'react-hooks/rules-of-hooks': 'error',
     'no-use-before-define': 'off',
-    '@typescript-eslint/no-use-before-define': ['error'],
+    '@typescript-eslint/no-use-before-define': 'warn',
     'react/jsx-filename-extension': ['error', { extensions: ['.tsx', '.jsx'] }],
     '@typescript-eslint/no-shadow': ['warn'],
     '@typescript-eslint/explicit-function-return-type': 'off',
@@ -144,5 +144,8 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     'global-require': 'off',
     'import/no-dynamic-require': 'off',
+    'react/no-unused-prop-types': [0],
+    'react/jsx-no-bind': 'off',
+    'default-param-last': 'off',
   },
 }
