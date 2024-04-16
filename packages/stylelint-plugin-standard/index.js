@@ -70,5 +70,6 @@ module.exports = {
     'no-duplicate-selectors': null,
     'custom-property-pattern': null,
     'selector-class-pattern': null,
+    'string-quotes': 'single',
   },
 }
