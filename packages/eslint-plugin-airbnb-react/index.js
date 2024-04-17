@@ -1,36 +1,28 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
-  env: {
-    browser: true,
-    node: true,
-    es2021: true,
-  },
-  globals: {
-    React: 'writable',
-  },
-  settings: {
-    // https://github.com/yannickcr/eslint-plugin-react
-    'react': {
-      version: 'detect',
-    },
-    // https://github.com/alexgorbatchev/eslint-import-resolver-typescript
-    'import/resolver': {
-      typescript: {},
-    },
-  },
+  root: true,
+  env: { browser: true, node: true, es2024: true },
   extends: [
     'airbnb',
-    'prettier',
     'prettier/prettier',
     'plugin:prettier/recommended',
-    'plugin:security/recommended',
+    'eslint:recommended',
     'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
-    'plugin:@typescript-eslint/recommended',
+    'plugin:react/jsx-runtime',
+    'plugin:@typescript-eslint/stylistic-type-checked',
+    'plugin:security/recommended',
     'plugin:import/recommended',
+    'plugin:react-hooks/recommended',
+    'prettier',
   ],
-
+  ignorePatterns: ['dist', '.eslintrc.cjs'],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['tsconfig.json', 'server/tsconfig.json'],
+    tsconfigRootDir: __dirname,
+  },
+  plugins: ['@typescript-eslint'],
   rules: {
     'no-underscore-dangle': 'off',
     'no-return-await': 'off',
@@ -147,5 +139,19 @@ module.exports = {
     'react/no-unused-prop-types': [0],
     'react/jsx-no-bind': 'off',
     'default-param-last': 'off',
+    '@typescript-eslint/prefer-nullish-coalescing': 'off',
+    'no-unused-vars': 'warn',
+  },
+  settings: {
+    'react': {
+      version: 'detect',
+    },
+    'import/resolver': {
+      typescript: {},
+      alias: {
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+      },
+    },
+    'import/order': ['error'],
   },
 }
