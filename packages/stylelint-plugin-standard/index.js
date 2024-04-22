@@ -1,13 +1,26 @@
 module.exports = {
-  extends: [
-    'stylelint-config-standard',
-    'stylelint-config-css-modules',
-    'stylelint-config-rational-order',
-    'stylelint-no-unsupported-browser-features',
-  ],
+  extends: ['stylelint-config-standard', 'stylelint-config-css-modules', 'stylelint-config-rational-order'],
   ignoreFiles: ['**/*.js', '**/*.jsx', '**/*.tsx', '**/*.ts'],
-  plugins: ['stylelint-declaration-block-no-ignored-properties'],
+  plugins: [
+    'stylelint-no-unsupported-browser-features',
+    'stylelint-declaration-block-no-ignored-properties',
+  ],
   rules: {
+    'plugin/no-unsupported-browser-features': [
+      true,
+      {
+        browsers: [
+          'Chrome >= 52', // Chrome 52 及以上版本
+          'Firefox >= 57', // Firefox 57 及以上版本
+          'Safari >= 10', // Safari 10 及以上版本
+          'iOS >= 10', // iOS 10 及以上版本
+          'Android >= 6', // Android 6 及以上版本
+          'not dead', // 不包括已停止支持的浏览器
+        ],
+        ignore: ['rem'],
+        ignorePartialSupport: true,
+      },
+    ],
     'selector-pseudo-class-no-unknown': [
       true,
       {
@@ -70,6 +83,6 @@ module.exports = {
     'no-duplicate-selectors': null,
     'custom-property-pattern': null,
     'selector-class-pattern': null,
-    'string-quotes': 'single',
+    'string-quotes': 'single'
   },
 }
