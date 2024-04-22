@@ -1,10 +1,7 @@
 module.exports = {
   extends: ['stylelint-config-standard', 'stylelint-config-css-modules', 'stylelint-config-rational-order'],
   ignoreFiles: ['**/*.js', '**/*.jsx', '**/*.tsx', '**/*.ts'],
-  plugins: [
-    'stylelint-no-unsupported-browser-features',
-    'stylelint-declaration-block-no-ignored-properties',
-  ],
+  plugins: ['stylelint-no-unsupported-browser-features', 'stylelint-declaration-block-no-ignored-properties'],
   rules: {
     'plugin/no-unsupported-browser-features': [
       true,
@@ -83,6 +80,6 @@ module.exports = {
     'no-duplicate-selectors': null,
     'custom-property-pattern': null,
     'selector-class-pattern': null,
-    'string-quotes': 'single'
+    'string-quotes': 'single',
   },
 }
