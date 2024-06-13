@@ -22,7 +22,7 @@
     "module": "ESNext",
     "target": "ES2015",
     "moduleResolution": "Bundler",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": ["DOM", "DOM.Iterable", "ES6"],
     "forceConsistentCasingInFileNames": false,
     "composite": false,
     "noImplicitReturns": false,
