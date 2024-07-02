@@ -81,5 +81,7 @@ module.exports = {
     'custom-property-pattern': null,
     'selector-class-pattern': null,
     'string-quotes': 'single',
+    'max-line-length': [240],
+    'color-function-notation': null,
   },
 }
