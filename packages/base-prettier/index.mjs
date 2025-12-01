@@ -1,6 +1,6 @@
 // https://prettier.io/docs/en/options.html
 
-module.exports = {
+export default {
   htmlWhitespaceSensitivity: 'ignore', // 格式化完整的换行
   printWidth: 120, // 指定每行代码的最佳长度，超出长度则换行。
   tabWidth: 2, // 每个制表符占用的空格数
@@ -13,5 +13,5 @@ module.exports = {
   bracketSpacing: true, // 对象左右两边添加空格
   bracketSameLine: false, // 如果为 true，则将多行 jsx 元素的 `>` 放在最后一行的末尾，而不是单独放在下一行
   arrowParens: 'avoid', // 当箭头函数仅有一个参数时加上括号
-  endOfLine: 'lf',
+  endOfLine: 'auto',
 }
