@@ -1,22 +1,31 @@
 {
   "name": "stylelint-plugin-standard",
-  "version": "1.1.11",
+  "version": "2.0.0",
   "description": "custom Stylelint config, for react and ts",
-  "repository": "https://github.com/algesthesiah/code-standard-config",
-  "main": "index.js",
   "keywords": [
     "stylelint"
   ],
-  "author": "algesthesiah https://github.com/algesthesiah",
+  "repository": "https://github.com/algesthesiah/code-standard-config",
   "license": "MIT",
-  "dependencies": {
-    "stylelint": "14.8.5",
-    "stylelint-config-css-modules": "4.1.0",
-    "stylelint-config-prettier": "9.0.3",
-    "stylelint-config-rational-order": "0.1.2",
-    "stylelint-config-standard": "25.0.0",
-    "stylelint-declaration-block-no-ignored-properties": "2.5.0",
-    "stylelint-no-unsupported-browser-features": "5.0.3",
-    "stylelint-order": "5.0.0"
+  "author": "algesthesiah https://github.com/algesthesiah",
+  "main": "./index.mjs",
+  "module": "./index.mjs",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "default": "./index.mjs"
+    }
+  },
+  "peerDependencies": {
+    "@stylistic/stylelint-plugin": "4.0.0",
+    "postcss": "8.5.6",
+    "postcss-html": "1.8.0",
+    "prettier": "3.7.3",
+    "stylelint": "16.26.1",
+    "stylelint-config-recess-order": "7.4.0",
+    "stylelint-config-recommended": "17.0.0",
+    "stylelint-config-standard": "39.0.1",
+    "stylelint-order": "7.0.0",
+    "stylelint-prettier": "5.0.3"
   }
 }

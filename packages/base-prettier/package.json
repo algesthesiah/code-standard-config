@@ -1,0 +1,19 @@
+{
+  "name": "base-prettier",
+  "version": "1.0.1",
+  "description": "prettier config",
+  "keywords": [
+    "ts-config"
+  ],
+  "repository": "https://github.com/algesthesiah/code-standard-config",
+  "license": "MIT",
+  "author": "algesthesiah https://github.com/algesthesiah",
+  "type": "module",
+  "main": "./index.mjs",
+  "module": "./index.mjs",
+  "exports": {
+    ".": {
+      "default": "./index.mjs"
+    }
+  }
+}
