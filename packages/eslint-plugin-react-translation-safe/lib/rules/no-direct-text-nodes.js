@@ -39,13 +39,25 @@ export default {
     function isTranslatableText(text) {
       const trimmed = text.trim()
       if (!trimmed) return false
-
       // 中文检测
       const chineseRegex = /[\u4E00-\u9FA5]/
       // 英文单词检测（3 个字母以上）
       const englishWordRegex = /\b[a-z]{3,}\b/i
-
       return chineseRegex.test(trimmed) || englishWordRegex.test(trimmed)
+    }
+
+    // 判断表达式是否已经被 JSX 元素包裹
+    function isJSXElement(node) {
+      return node && node.type === 'JSXElement'
+    }
+
+    // 判断表达式类型是否可能为字符串（静态分析，常见场景）
+    function isStringLikeExpression(node) {
+      if (!node) return false
+      if (node.type === 'Literal' && typeof node.value === 'string') return true
+      if (node.type === 'TemplateLiteral') return true
+      if (node.type === 'Identifier' || node.type === 'MemberExpression' || node.type === 'CallExpression') return true
+      return false
     }
 
     return {
@@ -56,7 +68,6 @@ export default {
         node.children.forEach(child => {
           if (child.type === 'JSXText') {
             const text = child.value
-            // 只对未被 wrapperElement 包裹的文本报错和修复
             if (isTranslatableText(text) && elementName !== wrapperElement) {
               context.report({
                 node: child,
@@ -73,40 +84,51 @@ export default {
             }
           } else if (child.type === 'JSXExpressionContainer') {
             const expr = child.expression
-            // 递归处理逻辑表达式和条件表达式
-            function wrapIfNeeded(e, source) {
-              if (e.type === 'Literal' && typeof e.value === 'string' && isTranslatableText(e.value)) {
-                return `<${wrapperElement}>{${source}}</${wrapperElement}>`
-              }
-              return null
-            }
+            // 优化：只处理未被元素包裹的文本表达式
             let fixCode = null
             if (
               expr &&
               (expr.type === 'Literal' || expr.type === 'Identifier' || expr.type === 'MemberExpression') &&
               elementName !== wrapperElement
             ) {
-              fixCode = `<${wrapperElement}>{${context.getSourceCode().getText(expr)}}</${wrapperElement}>`
+              // 只包裹字符串文本
+              if (expr.type === 'Literal' && typeof expr.value === 'string' && isTranslatableText(expr.value)) {
+                fixCode = `<${wrapperElement}>{${context.getSourceCode().getText(expr)}}</${wrapperElement}>`
+              }
             } else if (expr && expr.type === 'LogicalExpression') {
               // 处理 isLoading && '加载中...'
               const left = context.getSourceCode().getText(expr.left)
-              const right = wrapIfNeeded(expr.right, context.getSourceCode().getText(expr.right))
-              if (right) {
+              const rightExpr = expr.right
+              let right = context.getSourceCode().getText(rightExpr)
+              if (
+                !isJSXElement(rightExpr) &&
+                rightExpr.type === 'Literal' &&
+                typeof rightExpr.value === 'string' &&
+                isTranslatableText(rightExpr.value)
+              ) {
+                right = `<${wrapperElement}>{${right}}</${wrapperElement}>`
                 fixCode = `{${left} && ${right}}`
               }
             } else if (expr && expr.type === 'ConditionalExpression') {
-              // 处理三元表达式
+              // 处理三元表达式，只有分支不是 JSX 元素且为可翻译文本才包裹
               const test = context.getSourceCode().getText(expr.test)
-              let consequent = context.getSourceCode().getText(expr.consequent)
-              let alternate = context.getSourceCode().getText(expr.alternate)
-              // 只要不是 JSX 元素都包裹一层
-              if (expr.consequent.type !== 'JSXElement') {
-                consequent = `<${wrapperElement}>{${consequent}}</${wrapperElement}>`
+              const consequentExpr = expr.consequent
+              const alternateExpr = expr.alternate
+              let consequent = context.getSourceCode().getText(consequentExpr)
+              let alternate = context.getSourceCode().getText(alternateExpr)
+              if (!isJSXElement(consequentExpr) && isStringLikeExpression(consequentExpr)) {
+                consequent = `<${wrapperElement}>{${context.getSourceCode().getText(consequentExpr)}}</${wrapperElement}>`
               }
-              if (expr.alternate.type !== 'JSXElement') {
-                alternate = `<${wrapperElement}>{${alternate}}</${wrapperElement}>`
+              if (!isJSXElement(alternateExpr) && isStringLikeExpression(alternateExpr)) {
+                alternate = `<${wrapperElement}>{${context.getSourceCode().getText(alternateExpr)}}</${wrapperElement}>`
               }
-              fixCode = `{${test} ? ${consequent} : ${alternate}}`
+              // 只有有分支需要包裹时才报错
+              if (
+                consequent !== context.getSourceCode().getText(consequentExpr) ||
+                alternate !== context.getSourceCode().getText(alternateExpr)
+              ) {
+                fixCode = `{${test} ? ${consequent} : ${alternate}}`
+              }
             }
             if (fixCode) {
               context.report({

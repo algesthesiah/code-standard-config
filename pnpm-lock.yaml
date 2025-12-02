@@ -121,8 +121,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1(eslint@9.39.1(jiti@2.6.1))
       eslint-plugin-react-translation-safe:
-        specifier: 1.1.8
-        version: 1.1.8(eslint@9.39.1(jiti@2.6.1))
+        specifier: 2.0.0
+        version: 2.0.0(eslint@9.39.1(jiti@2.6.1))
       eslint-plugin-regexp:
         specifier: 2.10.0
         version: 2.10.0(eslint@9.39.1(jiti@2.6.1))
@@ -1827,8 +1827,8 @@ packages:
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
 
-  eslint-plugin-react-translation-safe@1.1.8:
-    resolution: {integrity: sha512-ZcB2BDPICiS2c17H6DDrx1+B5E6wtZJ1YDkZFMFZcrxIK0OBbcWNLDIXAfwNUO4vEsWsL+W6EmbJS2TW7fBNCQ==}
+  eslint-plugin-react-translation-safe@2.0.0:
+    resolution: {integrity: sha512-OfidrWpZPC2x/dugcumRCASxl8Dfgcw84bqR6rgOT+hxi9Zdrx21A3vUZKwJhW/Bd7T5mPn3svSly+vOjv0N0w==}
     peerDependencies:
       eslint: '>=9.0.0'
 
@@ -5431,7 +5431,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-react-translation-safe@1.1.8(eslint@9.39.1(jiti@2.6.1)):
+  eslint-plugin-react-translation-safe@2.0.0(eslint@9.39.1(jiti@2.6.1)):
     dependencies:
       eslint: 9.39.1(jiti@2.6.1)
 

@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-react-translation-safe",
-  "version": "1.1.8",
+  "version": "2.0.0",
   "description": "ESLint plugin to prevent React rendering errors caused by web translation tools",
   "keywords": [
     "eslint",
