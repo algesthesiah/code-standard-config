@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-airbnb-react",
-  "version": "2.4.9",
+  "version": "2.4.10",
   "description": "custom ESLint config, for react and ts, depends on airbnb, plugin-react, plugin-prettier and so on",
   "keywords": [
     "eslint",
@@ -57,7 +57,7 @@
     "eslint-plugin-prettier": "5.5.4",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.0.1",
-    "eslint-plugin-react-translation-safe": "1.1.7",
+    "eslint-plugin-react-translation-safe": "1.1.8",
     "eslint-plugin-regexp": "2.10.0",
     "eslint-plugin-rtl-friendly": "^0.5.1",
     "eslint-plugin-security": "3.0.1",

@@ -54,47 +54,6 @@ export default {
         if (allowedTags.includes(elementName)) return
 
         node.children.forEach(child => {
-          // 递归处理嵌套 JSXElement
-          if (child.type === 'JSXElement') {
-            // 递归调用处理嵌套元素
-            child.children.forEach(grandChild => {
-              if (grandChild.type === 'JSXText') {
-                const text = grandChild.value
-                if (isTranslatableText(text) && child.openingElement.name.name !== wrapperElement) {
-                  context.report({
-                    node: grandChild,
-                    messageId: 'directTextNode',
-                    data: {
-                      text: text.trim().slice(0, 20),
-                      tagName: child.openingElement.name.name,
-                      wrapperElement,
-                    },
-                    fix(fixer) {
-                      return fixer.replaceText(grandChild, `<${wrapperElement}>${text}</${wrapperElement}>`)
-                    },
-                  })
-                }
-              } else if (grandChild.type === 'JSXExpressionContainer') {
-                const expr = grandChild.expression
-                if (
-                  expr &&
-                  (expr.type === 'Literal' || expr.type === 'Identifier' || expr.type === 'MemberExpression') &&
-                  child.openingElement.name.name !== wrapperElement
-                ) {
-                  context.report({
-                    node: grandChild,
-                    message: `表达式建议用元素包裹以保证结构稳定`,
-                    fix(fixer) {
-                      return fixer.replaceText(
-                        grandChild,
-                        `<${wrapperElement}>{${context.getSourceCode().getText(expr)}}</${wrapperElement}>`
-                      )
-                    },
-                  })
-                }
-              }
-            })
-          }
           if (child.type === 'JSXText') {
             const text = child.value
             // 只对未被 wrapperElement 包裹的文本报错和修复
