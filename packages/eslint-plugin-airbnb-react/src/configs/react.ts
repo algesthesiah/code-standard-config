@@ -3,13 +3,14 @@
  */
 import type { Linter } from 'eslint'
 
+import reactTranslationSafe from 'eslint-plugin-react-translation-safe'
+
 import { interopDefault } from '../util'
 
 export async function react(): Promise<Linter.Config[]> {
-  const [reactPlugin, reactHooks, reactGoogleTranslate, jsxA11y, globals, tseslint, rtlFriendly] = await Promise.all([
+  const [reactPlugin, reactHooks, jsxA11y, globals, tseslint, rtlFriendly] = await Promise.all([
     interopDefault(import('eslint-plugin-react')),
     interopDefault(import('eslint-plugin-react-hooks')),
-    interopDefault(import('eslint-plugin-react-google-translate')),
     interopDefault(import('eslint-plugin-jsx-a11y')),
     interopDefault(import('globals')),
     interopDefault(import('typescript-eslint')),
@@ -19,6 +20,7 @@ export async function react(): Promise<Linter.Config[]> {
     reactPlugin.configs.flat.recommended ?? {},
     reactHooks.configs.flat.recommended ?? {},
     ...tseslint.configs.recommended,
+    rtlFriendly.configs.recommended,
     {
       files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}'],
       settings: {
@@ -38,11 +40,11 @@ export async function react(): Promise<Linter.Config[]> {
         'react': reactPlugin,
         'react-hooks': reactHooks as any,
         'jsx-a11y': jsxA11y,
-        'react-google-translate': reactGoogleTranslate,
         '@typescript-eslint': tseslint.plugin,
-        'rtl-friendly': rtlFriendly as any,
+        'react-translation-safe': reactTranslationSafe,
       },
       rules: {
+        ...reactTranslationSafe.configs.recommended.rules,
         // 推荐关闭的规则
         'react/destructuring-assignment': 'off',
         'react/no-danger': 'warn', // 使用时警告
@@ -89,6 +91,7 @@ export async function react(): Promise<Linter.Config[]> {
         '@typescript-eslint/no-unused-vars': 'warn',
         // 禁用旧的规则，启用新 JSX 转换后不再需要导入 React
         'react/react-in-jsx-scope': 'off',
+        'rtl-friendly/no-physical-properties': 'error',
       },
     },
   ]

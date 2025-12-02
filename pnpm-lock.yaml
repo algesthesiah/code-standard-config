@@ -117,12 +117,12 @@ importers:
       eslint-plugin-react:
         specifier: 7.37.5
         version: 7.37.5(eslint@9.39.1(jiti@2.6.1))
-      eslint-plugin-react-google-translate:
-        specifier: ^0.1.1
-        version: 0.1.1(eslint@9.39.1(jiti@2.6.1))
       eslint-plugin-react-hooks:
         specifier: 7.0.1
         version: 7.0.1(eslint@9.39.1(jiti@2.6.1))
+      eslint-plugin-react-translation-safe:
+        specifier: 1.1.7
+        version: 1.1.7(eslint@9.39.1(jiti@2.6.1))
       eslint-plugin-regexp:
         specifier: 2.10.0
         version: 2.10.0(eslint@9.39.1(jiti@2.6.1))
@@ -156,6 +156,12 @@ importers:
       typescript-eslint:
         specifier: ^8.48.0
         version: 8.48.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+
+  packages/eslint-plugin-react-translation-safe:
+    dependencies:
+      eslint:
+        specifier: '>=9.0.0'
+        version: 9.39.1(jiti@2.6.1)
 
   packages/stylelint-plugin-standard:
     dependencies:
@@ -1820,6 +1826,11 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
+
+  eslint-plugin-react-translation-safe@1.1.7:
+    resolution: {integrity: sha512-hBDuW0K3cgcwDz/aRi+GpAEeJLqsvXJxUSryzTj8/Hy6svKuY9sAlBEErgl0f8ewgUScofj6QQX1xEtm0cqzLw==}
+    peerDependencies:
+      eslint: '>=9.0.0'
 
   eslint-plugin-react@7.37.5:
     resolution: {integrity: sha512-Qteup0SqU15kdocexFNAJMvCJEfa2xUKNV4CC1xsVMrIIqEy3SQ/rqyxCWNzfrd3/ldy6HMlD2e0JDVpDg2qIA==}
@@ -5419,6 +5430,10 @@ snapshots:
       zod-validation-error: 4.0.2(zod@4.1.13)
     transitivePeerDependencies:
       - supports-color
+
+  eslint-plugin-react-translation-safe@1.1.7(eslint@9.39.1(jiti@2.6.1)):
+    dependencies:
+      eslint: 9.39.1(jiti@2.6.1)
 
   eslint-plugin-react@7.37.5(eslint@9.39.1(jiti@2.6.1)):
     dependencies:
