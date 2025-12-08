@@ -107,11 +107,22 @@ export default {
     function hasMixedContent(children) {
       if (!children || children.length === 0) return false
 
+      // 过滤掉空白文本节点和注释节点，只保留有意义的节点
+      const meaningfulChildren = children.filter(child => {
+        // 保留所有非文本节点
+        if (child.type !== 'JSXText') return true
+        // 对于文本节点，只保留可翻译的文本
+        return isTranslatableText(child.value)
+      })
+
+      // 如果过滤后只有一个节点，不是混合内容
+      if (meaningfulChildren.length <= 1) return false
+
       let hasTextNode = false
       let hasElement = false
       let hasTextExpression = false
 
-      for (const child of children) {
+      for (const child of meaningfulChildren) {
         switch (child.type) {
           case 'JSXElement': {
             hasElement = true

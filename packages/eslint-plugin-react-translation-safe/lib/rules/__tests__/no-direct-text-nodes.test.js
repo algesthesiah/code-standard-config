@@ -117,6 +117,32 @@ ruleTester.run('no-direct-text-nodes', rule, {
         },
       },
     },
+    {
+      code: `
+        <div>
+          {/* ✅ single text node in Link, no siblings */}
+          <Link href="/">Welcome</Link>
+          {/* ✅ single text node in button, no siblings */}
+          <button>Click me</button>
+          {/* ✅ single text node in anchor, no siblings */}
+          <a href="/">Home</a>
+        </div>
+      `,
+      languageOptions: {
+        parser,
+        parserOptions: {
+          requireConfigFile: false,
+          ecmaVersion: 2020,
+          sourceType: 'module',
+          ecmaFeatures: {
+            jsx: true,
+          },
+          babelOptions: {
+            presets: ['@babel/preset-react'],
+          },
+        },
+      },
+    },
   ],
   invalid: [
     {
