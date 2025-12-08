@@ -27,6 +27,7 @@ export default {
     messages: {
       directTextNode:
         '直接文本节点 "{{ text }}" 在 <{{ tagName }}> 中，可能被翻译工具修改。请使用 {{ wrapperElement }} 包裹。',
+      expressionTextNode: '表达式中的文本节点可能被翻译工具修改。请使用 {{ wrapperElement }} 包裹。',
     },
   },
 
@@ -34,9 +35,13 @@ export default {
     const options = context.options[0] || {}
     const allowedTags = options.allowedTags || ['title', 'script', 'style', 'textarea', 'option']
     const wrapperElement = options.wrapperElement || 'span'
+    const sourceCode = context.getSourceCode()
 
-    // 检测是否为可翻译的文本
+    /**
+     * 检测是否为可翻译的文本
+     */
     function isTranslatableText(text) {
+      if (!text || typeof text !== 'string') return false
       const trimmed = text.trim()
       if (!trimmed) return false
       // 中文检测
@@ -46,29 +51,206 @@ export default {
       return chineseRegex.test(trimmed) || englishWordRegex.test(trimmed)
     }
 
-    // 判断表达式是否已经被 JSX 元素包裹
+    /**
+     * 判断节点是否为 JSX 元素
+     */
     function isJSXElement(node) {
       return node && node.type === 'JSXElement'
     }
 
-    // 判断表达式类型是否可能为字符串（静态分析，常见场景）
-    function isStringLikeExpression(node) {
+    /**
+     * 判断表达式是否可能返回文本内容
+     */
+    function isTextLikeExpression(node) {
       if (!node) return false
-      if (node.type === 'Literal' && typeof node.value === 'string') return true
-      if (node.type === 'TemplateLiteral') return true
-      if (node.type === 'Identifier' || node.type === 'MemberExpression' || node.type === 'CallExpression') return true
+
+      // 字符串字面量
+      if (node.type === 'Literal' && typeof node.value === 'string') {
+        return isTranslatableText(node.value)
+      }
+
+      // 模板字符串
+      if (node.type === 'TemplateLiteral') {
+        return true
+      }
+
+      // 标识符、成员表达式、函数调用（可能返回字符串）
+      if (node.type === 'Identifier' || node.type === 'MemberExpression' || node.type === 'CallExpression') {
+        return true
+      }
+
       return false
+    }
+
+    /**
+     * 检查表达式是否返回 JSX 元素
+     */
+    function expressionReturnsJSX(expression) {
+      if (!expression) return false
+      if (isJSXElement(expression)) return true
+      // 对于三元表达式，检查两个分支是否都返回 JSX
+      if (expression.type === 'ConditionalExpression') {
+        return expressionReturnsJSX(expression.consequent) && expressionReturnsJSX(expression.alternate)
+      }
+      // 对于逻辑表达式，检查右侧是否返回 JSX
+      if (expression.type === 'LogicalExpression') {
+        return expressionReturnsJSX(expression.right)
+      }
+      return false
+    }
+
+    /**
+     * 检查子节点列表中是否有多个非空白文本节点或混合内容
+     * 如果有混合内容，则需要包裹文本节点
+     * 但如果表达式返回的是 JSX 元素，则不算混合内容
+     */
+    function hasMixedContent(children) {
+      if (!children || children.length === 0) return false
+
+      let hasTextNode = false
+      let hasElement = false
+      let hasTextExpression = false
+
+      for (const child of children) {
+        switch (child.type) {
+          case 'JSXElement': {
+            hasElement = true
+
+            break
+          }
+          case 'JSXExpressionContainer': {
+            const expression = child.expression
+            // 如果表达式返回 JSX，不算文本表达式
+            if (!expressionReturnsJSX(expression)) {
+              hasTextExpression = true
+            }
+
+            break
+          }
+          case 'JSXText': {
+            if (isTranslatableText(child.value)) {
+              hasTextNode = true
+            }
+
+            break
+          }
+          // No default
+        }
+      }
+
+      // 如果有文本节点，且同时有其他类型的节点（元素或可能返回文本的表达式），则为混合内容
+      return hasTextNode && (hasElement || hasTextExpression)
+    }
+
+    /**
+     * 检查表达式容器中的表达式是否需要包裹
+     */
+    function shouldWrapExpression(expression, siblings) {
+      if (!expression) return false
+
+      // 如果表达式返回 JSX 元素，不需要包裹
+      if (expressionReturnsJSX(expression)) return false
+
+      // 如果没有兄弟节点，不需要包裹
+      if (!siblings || siblings.length === 0) return false
+
+      // 对于逻辑表达式，检查右侧是否可能返回文本
+      if (expression.type === 'LogicalExpression') {
+        const right = expression.right
+        return isTextLikeExpression(right) && !isJSXElement(right)
+      }
+
+      // 对于三元表达式，检查两个分支是否可能返回文本
+      if (expression.type === 'ConditionalExpression') {
+        const consequent = expression.consequent
+        const alternate = expression.alternate
+        return (
+          (isTextLikeExpression(consequent) && !isJSXElement(consequent)) ||
+          (isTextLikeExpression(alternate) && !isJSXElement(alternate))
+        )
+      }
+
+      // 对于其他表达式，检查是否可能返回文本
+      return isTextLikeExpression(expression)
+    }
+
+    /**
+     * 获取表达式的源代码文本
+     */
+    function getExpressionText(node) {
+      if (!node) return ''
+      return sourceCode.getText(node)
+    }
+
+    /**
+     * 生成包裹后的代码
+     */
+    function wrapInElement(text) {
+      return `<${wrapperElement}>${text}</${wrapperElement}>`
+    }
+
+    /**
+     * 递归处理表达式，如果返回文本则包裹
+     * @param {object} expr - 表达式节点
+     * @param {boolean} needsParens - 是否需要括号（用于嵌套表达式）
+     */
+    function wrapExpressionIfNeeded(expr, needsParens = false) {
+      if (!expr) return getExpressionText(expr)
+
+      // 如果是 JSX 元素，不需要包裹
+      if (isJSXElement(expr)) {
+        return getExpressionText(expr)
+      }
+
+      // 如果是三元表达式，递归处理两个分支
+      if (expr.type === 'ConditionalExpression') {
+        const test = getExpressionText(expr.test)
+        const consequent = wrapExpressionIfNeeded(expr.consequent, true)
+        const alternate = wrapExpressionIfNeeded(expr.alternate, true)
+        const result = `${test} ? ${consequent} : ${alternate}`
+        // 如果需要括号（嵌套表达式），添加括号
+        return needsParens ? `(${result})` : result
+      }
+
+      // 如果是逻辑表达式，递归处理右侧
+      if (expr.type === 'LogicalExpression') {
+        const left = getExpressionText(expr.left)
+        const operator = expr.operator
+        const right = wrapExpressionIfNeeded(expr.right, true)
+        const result = `${left} ${operator} ${right}`
+        // 如果需要括号（嵌套表达式），添加括号
+        return needsParens ? `(${result})` : result
+      }
+
+      // 如果是文本表达式，需要包裹
+      if (isTextLikeExpression(expr) && !isJSXElement(expr)) {
+        const exprText = getExpressionText(expr)
+        return wrapInElement(`{${exprText}}`)
+      }
+
+      // 其他情况，直接返回源代码
+      return getExpressionText(expr)
     }
 
     return {
       JSXElement(node) {
         const elementName = node.openingElement.name.name
+
+        // 跳过允许的标签
         if (allowedTags.includes(elementName)) return
 
-        node.children.forEach(child => {
+        const children = node.children || []
+        const hasMixed = hasMixedContent(children)
+
+        // 处理每个子节点
+        children.forEach((child, index) => {
+          // 处理直接文本节点
           if (child.type === 'JSXText') {
             const text = child.value
-            if (isTranslatableText(text) && elementName !== wrapperElement) {
+            if (
+              isTranslatableText(text) && // 如果有混合内容，或者文本节点前后有其他节点，需要包裹
+              hasMixed
+            ) {
               context.report({
                 node: child,
                 messageId: 'directTextNode',
@@ -78,66 +260,109 @@ export default {
                   wrapperElement,
                 },
                 fix(fixer) {
-                  return fixer.replaceText(child, `<${wrapperElement}>${text}</${wrapperElement}>`)
+                  // 保留原始文本的空白字符
+                  return fixer.replaceText(child, wrapInElement(text))
                 },
               })
             }
-          } else if (child.type === 'JSXExpressionContainer') {
-            const expr = child.expression
-            // 优化：只处理未被元素包裹的文本表达式
-            let fixCode = null
-            if (
-              expr &&
-              (expr.type === 'Literal' || expr.type === 'Identifier' || expr.type === 'MemberExpression') &&
-              elementName !== wrapperElement
-            ) {
-              // 只包裹字符串文本
-              if (expr.type === 'Literal' && typeof expr.value === 'string' && isTranslatableText(expr.value)) {
-                fixCode = `<${wrapperElement}>{${context.getSourceCode().getText(expr)}}</${wrapperElement}>`
+          }
+          // 处理表达式容器
+          else if (child.type === 'JSXExpressionContainer') {
+            const expression = child.expression
+            if (!expression) return
+
+            const siblings = children.filter((c, i) => i !== index && c.type !== 'JSXComment')
+            const shouldWrap = shouldWrapExpression(expression, siblings)
+
+            if (shouldWrap) {
+              // 处理逻辑表达式：isLoading && '加载中' 或 val || 'default'（支持嵌套）
+              if (expression.type === 'LogicalExpression') {
+                const operator = expression.operator // '&&' 或 '||'
+                const left = getExpressionText(expression.left)
+                const rightWrapped = wrapExpressionIfNeeded(expression.right)
+
+                // 检查右侧是否需要包裹
+                const originalRight = getExpressionText(expression.right)
+                if (rightWrapped !== originalRight) {
+                  const fixCode = `{${left} ${operator} ${rightWrapped}}`
+
+                  context.report({
+                    node: child,
+                    messageId: 'expressionTextNode',
+                    data: { wrapperElement },
+                    fix(fixer) {
+                      return fixer.replaceText(child, fixCode)
+                    },
+                  })
+                  return // 已处理，不需要继续
+                }
               }
-            } else if (expr && expr.type === 'LogicalExpression') {
-              // 处理 isLoading && '加载中...'
-              const left = context.getSourceCode().getText(expr.left)
-              const rightExpr = expr.right
-              let right = context.getSourceCode().getText(rightExpr)
-              if (
-                !isJSXElement(rightExpr) &&
-                rightExpr.type === 'Literal' &&
-                typeof rightExpr.value === 'string' &&
-                isTranslatableText(rightExpr.value)
-              ) {
-                right = `<${wrapperElement}>{${right}}</${wrapperElement}>`
-                fixCode = `{${left} && ${right}}`
+              // 处理三元表达式：condition ? 'foo' : 'bar'（支持嵌套）
+              else if (expression.type === 'ConditionalExpression') {
+                const test = getExpressionText(expression.test)
+                const originalConsequent = getExpressionText(expression.consequent)
+                const originalAlternate = getExpressionText(expression.alternate)
+
+                // 检查原始代码是否有括号（用于嵌套表达式）
+                const consequentHasParens = originalConsequent.startsWith('(') && originalConsequent.endsWith(')')
+                const alternateHasParens = originalAlternate.startsWith('(') && originalAlternate.endsWith(')')
+
+                const consequentWrapped = wrapExpressionIfNeeded(
+                  expression.consequent,
+                  expression.consequent.type === 'ConditionalExpression' && !consequentHasParens
+                )
+                const alternateWrapped = wrapExpressionIfNeeded(
+                  expression.alternate,
+                  expression.alternate.type === 'ConditionalExpression' && !alternateHasParens
+                )
+
+                // 检查是否有任何分支需要包裹
+                const needsFix = consequentWrapped !== originalConsequent || alternateWrapped !== originalAlternate
+
+                if (needsFix) {
+                  // 如果原始代码有括号，保留括号格式
+                  let finalConsequent = consequentWrapped
+                  let finalAlternate = alternateWrapped
+
+                  if (consequentHasParens && !finalConsequent.startsWith('(')) {
+                    finalConsequent = `(${finalConsequent})`
+                  }
+                  if (alternateHasParens && !finalAlternate.startsWith('(')) {
+                    finalAlternate = `(${finalAlternate})`
+                  }
+
+                  const fixCode = `{${test} ? ${finalConsequent} : ${finalAlternate}}`
+
+                  context.report({
+                    node: child,
+                    messageId: 'expressionTextNode',
+                    data: { wrapperElement },
+                    fix(fixer) {
+                      return fixer.replaceText(child, fixCode)
+                    },
+                  })
+                }
               }
-            } else if (expr && expr.type === 'ConditionalExpression') {
-              // 处理三元表达式，只有分支不是 JSX 元素且为可翻译文本才包裹
-              const test = context.getSourceCode().getText(expr.test)
-              const consequentExpr = expr.consequent
-              const alternateExpr = expr.alternate
-              let consequent = context.getSourceCode().getText(consequentExpr)
-              let alternate = context.getSourceCode().getText(alternateExpr)
-              if (!isJSXElement(consequentExpr) && isStringLikeExpression(consequentExpr)) {
-                consequent = `<${wrapperElement}>{${context.getSourceCode().getText(consequentExpr)}}</${wrapperElement}>`
+              // 处理其他表达式（字符串字面量、标识符等）
+              // 但标识符单独出现时，不应该报告（因为无法确定它返回什么）
+              else if (isTextLikeExpression(expression)) {
+                // 如果是标识符，不报告（因为无法确定它返回什么，可能是数字、对象等）
+                if (expression.type === 'Identifier') {
+                  return
+                }
+
+                const exprText = getExpressionText(expression)
+                const fixCode = wrapInElement(`{${exprText}}`)
+
+                context.report({
+                  node: child,
+                  messageId: 'expressionTextNode',
+                  data: { wrapperElement },
+                  fix(fixer) {
+                    return fixer.replaceText(child, fixCode)
+                  },
+                })
               }
-              if (!isJSXElement(alternateExpr) && isStringLikeExpression(alternateExpr)) {
-                alternate = `<${wrapperElement}>{${context.getSourceCode().getText(alternateExpr)}}</${wrapperElement}>`
-              }
-              // 只有有分支需要包裹时才报错
-              if (
-                consequent !== context.getSourceCode().getText(consequentExpr) ||
-                alternate !== context.getSourceCode().getText(alternateExpr)
-              ) {
-                fixCode = `{${test} ? ${consequent} : ${alternate}}`
-              }
-            }
-            if (fixCode) {
-              context.report({
-                node: child,
-                message: `表达式建议用元素包裹以保证结构稳定`,
-                fix(fixer) {
-                  return fixer.replaceText(child, fixCode)
-                },
-              })
             }
           }
         })

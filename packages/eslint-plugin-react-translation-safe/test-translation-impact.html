@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>谷歌翻译影响测试 - 场景 2</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .test-case {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 5px;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+    .success {
+      color: green;
+    }
+    button {
+      margin: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>谷歌翻译对场景 2 的影响测试</h1>
+
+  <div class="test-case">
+    <h2>测试 1: 修复后的代码（只包裹静态文本）</h2>
+    <div id="test1"></div>
+    <button onclick="updateName1()">更新 name 值</button>
+    <button onclick="simulateGoogleTranslate1()">模拟谷歌翻译</button>
+    <div id="result1"></div>
+  </div>
+
+  <div class="test-case">
+    <h2>测试 2: 完全包裹（推荐方案）</h2>
+    <div id="test2"></div>
+    <button onclick="updateName2()">更新 name 值</button>
+    <button onclick="simulateGoogleTranslate2()">模拟谷歌翻译</button>
+    <div id="result2"></div>
+  </div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // 测试 1: 当前修复方案
+    function Test1() {
+      const [name, setName] = useState('World');
+      const [count, setCount] = useState(0);
+
+      useEffect(() => {
+        console.log('Test1 rendered, name:', name);
+      });
+
+      return (
+        <div>
+          <p>
+            <span>Hello </span>{name}
+          </p>
+          <p>渲染次数: {count}</p>
+          <button onClick={() => setCount(c => c + 1)}>触发重新渲染</button>
+        </div>
+      );
+    }
+
+    // 测试 2: 完全包裹方案
+    function Test2() {
+      const [name, setName] = useState('World');
+      const [count, setCount] = useState(0);
+
+      useEffect(() => {
+        console.log('Test2 rendered, name:', name);
+      });
+
+      return (
+        <div>
+          <p>
+            <span>Hello </span><span>{name}</span>
+          </p>
+          <p>渲染次数: {count}</p>
+          <button onClick={() => setCount(c => c + 1)}>触发重新渲染</button>
+        </div>
+      );
+    }
+
+    // 模拟谷歌翻译：修改 DOM 中的文本节点
+    function simulateGoogleTranslate(containerId, resultId) {
+      const container = document.getElementById(containerId);
+      const result = document.getElementById(resultId);
+
+      try {
+        // 查找所有文本节点并修改
+        const walker = document.createTreeWalker(
+          container,
+          NodeFilter.SHOW_TEXT,
+          null,
+          false
+        );
+
+        let node;
+        let modified = 0;
+        while (node = walker.nextNode()) {
+          if (node.textContent.trim()) {
+            const original = node.textContent;
+            // 模拟翻译：简单替换
+            node.textContent = node.textContent
+              .replace(/Hello/gi, '你好')
+              .replace(/World/gi, '世界')
+              .replace(/John/gi, '约翰');
+            if (node.textContent !== original) {
+              modified++;
+            }
+          }
+        }
+
+        result.innerHTML = `<span class="success">✓ 模拟翻译完成，修改了 ${modified} 个文本节点</span>`;
+        result.innerHTML += '<br><span style="color: orange;">⚠️ 现在尝试更新 name 值，观察控制台是否有错误</span>';
+      } catch (error) {
+        result.innerHTML = `<span class="error">✗ 错误: ${error.message}</span>`;
+        console.error('Translation simulation error:', error);
+      }
+    }
+
+    function updateName1() {
+      const root = ReactDOM.getRoot(document.getElementById('test1'));
+      // 这里需要重新渲染来更新 name
+      // 实际应用中，name 会通过 state 更新
+      console.log('尝试更新 name...');
+    }
+
+    function updateName2() {
+      const root = ReactDOM.getRoot(document.getElementById('test2'));
+      console.log('尝试更新 name...');
+    }
+
+    function simulateGoogleTranslate1() {
+      simulateGoogleTranslate('test1', 'result1');
+    }
+
+    function simulateGoogleTranslate2() {
+      simulateGoogleTranslate('test2', 'result2');
+    }
+
+    // 渲染组件
+    const root1 = ReactDOM.createRoot(document.getElementById('test1'));
+    root1.render(<Test1 />);
+
+    const root2 = ReactDOM.createRoot(document.getElementById('test2'));
+    root2.render(<Test2 />);
+
+    // 监听 React 错误
+    window.addEventListener('error', (event) => {
+      console.error('Global error:', event.error);
+    });
+
+    // 监听未捕获的 Promise 错误
+    window.addEventListener('unhandledrejection', (event) => {
+      console.error('Unhandled promise rejection:', event.reason);
+    });
+  </script>
+
+  <div style="margin-top: 40px; padding: 20px; background: #f5f5f5; border-radius: 5px;">
+    <h3>测试说明：</h3>
+    <ol>
+      <li>点击"模拟谷歌翻译"按钮，会修改 DOM 中的文本节点</li>
+      <li>然后点击"更新 name 值"或"触发重新渲染"按钮</li>
+      <li>打开浏览器控制台，查看是否有 React 错误</li>
+      <li>观察页面是否正常渲染</li>
+    </ol>
+    <p><strong>预期结果：</strong></p>
+    <ul>
+      <li>如果出现 React 警告或错误，说明当前方案有问题</li>
+      <li>如果页面正常渲染，说明方案是安全的</li>
+    </ul>
+  </div>
+</body>
+</html>
+

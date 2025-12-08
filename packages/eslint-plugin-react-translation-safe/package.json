@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-react-translation-safe",
-  "version": "2.0.0",
+  "version": "2.0.6",
   "description": "ESLint plugin to prevent React rendering errors caused by web translation tools",
   "keywords": [
     "eslint",
@@ -14,6 +14,9 @@
   "license": "MIT",
   "author": "algesthesiah https://github.com/algesthesiah",
   "type": "module",
+  "scripts": {
+    "test": "mocha \"lib/rules/__tests__/**/*.test.js\""
+  },
   "files": [
     "index.js",
     "lib"
@@ -25,5 +28,11 @@
   },
   "peerDependencies": {
     "eslint": ">=9.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/eslint-parser": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
+    "mocha": "11.7.5"
   }
 }

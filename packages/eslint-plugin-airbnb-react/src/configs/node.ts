@@ -32,13 +32,7 @@ export async function node(): Promise<Linter.Config[]> {
         ],
         'n/prefer-global/buffer': ['error', 'never'],
         // 'n/no-missing-import': 'off',
-        'n/prefer-global/process': ['error', 'never'],
         'n/process-exit-as-throw': 'error',
-      },
-    },
-    {
-      files: ['scripts/**/*.?([cm])[jt]s?(x)', 'internal/**/*.?([cm])[jt]s?(x)'],
-      rules: {
         'n/prefer-global/process': 'off',
       },
     },
