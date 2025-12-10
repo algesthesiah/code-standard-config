@@ -312,6 +312,9 @@ export default {
             const expression = child.expression
             if (!expression) return
 
+            // 如果表达式返回 JSX（包括数组方法调用），不需要包裹，直接跳过
+            if (expressionReturnsJSX(expression)) return
+
             const siblings = children.filter((c, i) => i !== index && c.type !== 'JSXComment')
             const shouldWrap = shouldWrapExpression(expression, siblings)
 

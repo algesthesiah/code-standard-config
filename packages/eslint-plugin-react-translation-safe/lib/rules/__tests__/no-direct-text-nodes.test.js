@@ -191,6 +191,31 @@ ruleTester.run('no-direct-text-nodes', rule, {
         },
       },
     },
+    {
+      code: `
+        const markKeys = ['key1', 'key2'];
+        <div>
+          {/* ✅ array method call (map) inside span should not be wrapped */}
+          <span>{markKeys.map((key, index) => {
+            return <span key={index}>{key}</span>;
+          })}</span>
+        </div>
+      `,
+      languageOptions: {
+        parser,
+        parserOptions: {
+          requireConfigFile: false,
+          ecmaVersion: 2020,
+          sourceType: 'module',
+          ecmaFeatures: {
+            jsx: true,
+          },
+          babelOptions: {
+            presets: ['@babel/preset-react'],
+          },
+        },
+      },
+    },
   ],
   invalid: [
     {
