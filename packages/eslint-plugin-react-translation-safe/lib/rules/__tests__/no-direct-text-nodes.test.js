@@ -143,6 +143,54 @@ ruleTester.run('no-direct-text-nodes', rule, {
         },
       },
     },
+    {
+      code: `
+        const markKeys = ['key1', 'key2'];
+        <div>
+          {/* ✅ array method call (map) returns JSX elements array, should not be wrapped */}
+          {markKeys.map((key, index) => {
+            return <span key={index}>{key}</span>;
+          })}
+        </div>
+      `,
+      languageOptions: {
+        parser,
+        parserOptions: {
+          requireConfigFile: false,
+          ecmaVersion: 2020,
+          sourceType: 'module',
+          ecmaFeatures: {
+            jsx: true,
+          },
+          babelOptions: {
+            presets: ['@babel/preset-react'],
+          },
+        },
+      },
+    },
+    {
+      code: `
+        const items = [1, 2, 3];
+        <div>
+          {/* ✅ array method call (filter) returns JSX elements array, should not be wrapped */}
+          {items.filter(item => item > 1).map(item => <span key={item}>{item}</span>)}
+        </div>
+      `,
+      languageOptions: {
+        parser,
+        parserOptions: {
+          requireConfigFile: false,
+          ecmaVersion: 2020,
+          sourceType: 'module',
+          ecmaFeatures: {
+            jsx: true,
+          },
+          babelOptions: {
+            presets: ['@babel/preset-react'],
+          },
+        },
+      },
+    },
   ],
   invalid: [
     {

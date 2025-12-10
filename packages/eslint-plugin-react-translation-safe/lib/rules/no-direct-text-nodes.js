@@ -59,6 +59,24 @@ export default {
     }
 
     /**
+     * 检查是否为数组方法调用（通常返回 JSX 元素数组）
+     */
+    function isArrayMethodCall(node) {
+      if (!node || node.type !== 'CallExpression') return false
+      const callee = node.callee
+      // 检查是否是 array.map()、array.filter() 等
+      if (callee.type === 'MemberExpression') {
+        const property = callee.property
+        if (property && property.type === 'Identifier') {
+          // 常见的数组方法，通常返回 JSX 元素数组
+          const arrayMethods = ['map', 'filter', 'flatMap', 'reduce', 'reduceRight', 'flat']
+          return arrayMethods.includes(property.name)
+        }
+      }
+      return false
+    }
+
+    /**
      * 判断表达式是否可能返回文本内容
      */
     function isTextLikeExpression(node) {
@@ -72,6 +90,11 @@ export default {
       // 模板字符串
       if (node.type === 'TemplateLiteral') {
         return true
+      }
+
+      // 如果是数组方法调用，不应该被当作文本表达式（它们返回 JSX 元素数组）
+      if (isArrayMethodCall(node)) {
+        return false
       }
 
       // 标识符、成员表达式、函数调用（可能返回字符串）
@@ -88,6 +111,8 @@ export default {
     function expressionReturnsJSX(expression) {
       if (!expression) return false
       if (isJSXElement(expression)) return true
+      // 数组方法调用通常返回 JSX 元素数组，应该被当作返回 JSX 处理
+      if (isArrayMethodCall(expression)) return true
       // 对于三元表达式，检查两个分支是否都返回 JSX
       if (expression.type === 'ConditionalExpression') {
         return expressionReturnsJSX(expression.consequent) && expressionReturnsJSX(expression.alternate)
@@ -210,6 +235,11 @@ export default {
 
       // 如果是 JSX 元素，不需要包裹
       if (isJSXElement(expr)) {
+        return getExpressionText(expr)
+      }
+
+      // 如果是数组方法调用，不需要包裹（它们返回 JSX 元素数组）
+      if (isArrayMethodCall(expr)) {
         return getExpressionText(expr)
       }
 
