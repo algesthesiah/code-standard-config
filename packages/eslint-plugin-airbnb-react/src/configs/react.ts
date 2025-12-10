@@ -3,7 +3,7 @@
  */
 import type { Linter } from 'eslint'
 
-import reactTranslationSafe from 'eslint-plugin-react-translation-safe'
+import reactTranslationSafe from '@ss/eslint-plugin-react-translation-safe'
 
 import { interopDefault } from '../util'
 
