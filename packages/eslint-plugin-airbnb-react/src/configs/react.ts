@@ -92,8 +92,6 @@ export async function react(): Promise<Linter.Config[]> {
         // 禁用旧的规则，启用新 JSX 转换后不再需要导入 React
         'react/react-in-jsx-scope': 'off',
         'rtl-friendly/no-physical-properties': 'error',
-        'quotes': ['error', 'single', { avoidEscape: true }],
-        '@typescript-eslint/quotes': ['error', 'single', { avoidEscape: true }],
       },
     },
   ]
