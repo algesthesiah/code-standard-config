@@ -27,10 +27,10 @@ type FlatConfigPromise = FlatConfig | FlatConfig[] | Promise<FlatConfig> | Promi
 async function defineConfig(config: FlatConfig[] = []) {
   const configs: FlatConfigPromise[] = [
     javascript(),
+    jsonc(),
     prettier(),
     react(),
     ignores(),
-    jsonc(),
     disableds(),
     importPluginConfig(),
     node(),
