@@ -1,5 +1,5 @@
 {
-  "name": "@ss/eslint-plugin-airbnb-react",
+  "name": "eslint-plugin-airbnb-react",
   "version": "2.5.17",
   "description": "custom ESLint config, for react and ts, depends on airbnb, plugin-react, plugin-prettier and so on",
   "keywords": [
@@ -34,7 +34,6 @@
   },
   "peerDependencies": {
     "@eslint/js": "9.39.1 ",
-    "@ss/eslint-plugin-react-translation-safe": "2.0.9",
     "@types/eslint": "9.6.1",
     "@types/node": "^24.10.1",
     "base-ts-config": "^2.0.1",
@@ -58,6 +57,7 @@
     "eslint-plugin-prettier": "5.5.4",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.0.1",
+    "eslint-plugin-react-translation-safe": "2.0.9",
     "eslint-plugin-regexp": "2.10.0",
     "eslint-plugin-rtl-friendly": "^0.5.1",
     "eslint-plugin-security": "3.0.1",
@@ -66,9 +66,19 @@
     "eslint-plugin-vitest": "0.5.4",
     "globals": "16.5.0",
     "jsonc-eslint-parser": "2.4.1",
-    "prettier": "3.7.3",
+    "prettier": "^3.7.3",
     "typescript": "5.9.3",
     "typescript-eslint": "^8.48.0"
   },
-  "dependencies": {}
+  "peerDependenciesMeta": {
+    "prettier": {
+      "required": true
+    }
+  },
+  "dependencies": {},
+  "pnpm": {
+    "overrides": {
+      "prettier": "^3.7.3"
+    }
+  }
 }

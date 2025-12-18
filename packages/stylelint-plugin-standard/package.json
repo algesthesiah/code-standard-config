@@ -1,6 +1,6 @@
 {
   "name": "stylelint-plugin-standard",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "custom Stylelint config, for react and ts",
   "keywords": [
     "stylelint"
@@ -20,12 +20,22 @@
     "@stylistic/stylelint-plugin": "4.0.0",
     "postcss": "8.5.6",
     "postcss-html": "1.8.0",
-    "prettier": "3.7.3",
+    "prettier": "^3.7.3",
     "stylelint": "16.26.1",
     "stylelint-config-recess-order": "7.4.0",
     "stylelint-config-recommended": "17.0.0",
     "stylelint-config-standard": "39.0.1",
     "stylelint-order": "7.0.0",
     "stylelint-prettier": "5.0.3"
+  },
+  "peerDependenciesMeta": {
+    "prettier": {
+      "required": true
+    }
+  },
+  "pnpm": {
+    "overrides": {
+      "prettier": "^3.7.3"
+    }
   }
 }
