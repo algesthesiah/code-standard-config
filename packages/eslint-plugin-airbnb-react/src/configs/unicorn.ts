@@ -29,6 +29,7 @@ export async function unicorn(): Promise<Linter.Config[]> {
         'unicorn/prefer-top-level-await': 'off',
         'unicorn/prevent-abbreviations': 'off',
         'unicorn/no-anonymous-default-export': 'off',
+        'unicorn/no-abusive-eslint-disable': 'off',
       },
     },
     {
