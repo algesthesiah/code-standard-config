@@ -89,3 +89,4 @@ npm whoami --registry=https://registry.npmjs.org/
 
 现在应该不需要浏览器认证了。
 
+
