@@ -18,6 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -30,6 +31,7 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
           # 使用 Trusted Publisher，不需要 NPM_TOKEN
+          # 确保 scope 配置正确（如果有的话）
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -37,13 +39,38 @@ jobs:
       - name: Build packages
         run: pnpm build
 
-      - name: Create Release Pull Request or Publish
-        uses: changesets/action@v1
-        with:
-          publish: pnpm exec changeset publish
-          version: pnpm exec changeset version
-          commit: 'chore: version packages'
-          title: 'chore: version packages'
+      - name: Check for changesets
+        id: changesets
+        run: |
+          if [ -n "$(find .changeset -name '*.md' -type f ! -name 'README.md')" ]; then
+            echo "has_changesets=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changesets=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Version packages
+        if: steps.changesets.outputs.has_changesets == 'true'
+        run: pnpm exec changeset version
+
+      - name: Commit version changes
+        if: steps.changesets.outputs.has_changesets == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          # 检查是否有变更需要提交
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: version packages [skip ci]"
+            git push
+          fi
+
+      - name: Publish to npm
+        # changeset publish 会自动检查是否有需要发布的包
+        # 如果有 changeset 文件，说明版本已更新，可以发布
+        # 如果没有 changeset 文件，说明没有待发布的版本
+        run: pnpm exec changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # 不需要 NPM_TOKEN，使用 Trusted Publisher 自动认证
