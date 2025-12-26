@@ -2,6 +2,7 @@ name: Hello World
 
 on:
   push:
+    branches: ["**"]
   workflow_dispatch:
 
 jobs:
@@ -11,3 +12,7 @@ jobs:
       - name: Say Hello
         run: |
           echo "Hello World!"
+          echo "GitHub Actions is working!"
+          echo "Timestamp: $(date)"
+          echo "Branch: ${{ github.ref }}"
+          echo "Event: ${{ github.event_name }}"
