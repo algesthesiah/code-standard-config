@@ -2,8 +2,6 @@ name: Hello World
 
 on:
   push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -13,6 +11,3 @@ jobs:
       - name: Say Hello
         run: |
           echo "Hello World!"
-          echo "GitHub Actions is working!"
-          echo "Current time: $(date)"
-# trigger test
