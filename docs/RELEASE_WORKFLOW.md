@@ -111,7 +111,7 @@ git push origin main
 
 ## 查看发布状态
 
-1. 访问 GitHub Actions：`https://github.com/你的用户名/code-standard-config/actions`
+1. 访问 GitHub Actions：`https://github.com/algesthesiah/code-standard-config/actions`
 2. 查看 "Version and Publish" 工作流
 3. 查看发布日志确认是否成功
 
