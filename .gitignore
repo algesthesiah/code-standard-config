@@ -71,6 +71,8 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
+.env.local
+.npmrc.local
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -103,3 +105,7 @@ dist
 # TernJS port file
 .tern-port
 dist
+
+# Turborepo
+.turbo
+.npmrc.local

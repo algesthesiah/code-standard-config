@@ -450,7 +450,7 @@ ruleTester.run('no-direct-text-nodes - function calls (ignored)', rule, {
               id: "header.noticeCountTipNew",
               values: {
                 num: renderNumber(unreadNum),
-              },
+          },
             })}
           </span>
         </div>
@@ -494,6 +494,53 @@ ruleTester.run('no-direct-text-nodes - function calls (ignored)', rule, {
       `,
       languageOptions: { parser, parserOptions },
       errors: [{ message: /表达式中的文本节点可能被翻译工具修改/ }],
+    },
+  ],
+  invalid: [],
+})
+
+// 数字表达式测试（不应该报错）
+ruleTester.run('no-direct-text-nodes - numeric expressions', rule, {
+  valid: [
+    {
+      code: `
+        <div className="space-y-4">
+          {Array.from({ length: 50 }, (_, i) => (
+            <p className="text-text_primary" key={i}>
+              <span>这是第 </span>
+              {i + 1}
+              <span>
+                <span>
+                  段内容。当内容超出抽屉高度时，内容区域会出现滚动条。
+                </span>
+              </span>
+            </p>
+          ))}
+        </div>
+      `,
+      languageOptions: { parser, parserOptions },
+    },
+    {
+      code: `
+        <div>
+          <p>
+            <span>Count: </span>
+            {count}
+            <span> items</span>
+          </p>
+        </div>
+      `,
+      languageOptions: { parser, parserOptions },
+    },
+    {
+      code: `
+        <div>
+          <span>Price: </span>
+          {price * quantity}
+          <span> yuan</span>
+        </div>
+      `,
+      languageOptions: { parser, parserOptions },
     },
   ],
   invalid: [],

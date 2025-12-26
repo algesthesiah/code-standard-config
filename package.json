@@ -11,21 +11,32 @@
   "license": "MIT",
   "author": "algesthesiah",
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "pnpm build && changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.8",
     "@commitlint/cli": "19.2.2",
     "@commitlint/config-conventional": "19.2.2",
     "@types/node": "^24.10.1",
     "base-prettier": "^1.0.1",
     "base-ts-config": "2.0.1",
     "eslint": "^9.39.1",
-    "eslint-plugin-airbnb-react": "2.3.3",
+    "eslint-plugin-airbnb-react": "workspace:*",
     "husky": "9.0.11",
     "lint-staged": "15.2.2",
-    "stylelint-plugin-standard": "2.0.0",
+    "stylelint-plugin-standard": "workspace:*",
+    "turbo": "^2.7.2",
     "unbuild": "^3.6.1"
   },
+  "packageManager": "pnpm@10.25.0",
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": "eslint --fix",
     "*.stylelintignore": "stylelint --fix",

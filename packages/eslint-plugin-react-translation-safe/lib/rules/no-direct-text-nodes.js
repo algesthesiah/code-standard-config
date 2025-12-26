@@ -92,6 +92,56 @@ export default {
     }
 
     /**
+     * 检查是否为数字表达式（返回数字，不应该被当作文本）
+     */
+    function isNumericExpression(node) {
+      if (!node) return false
+
+      // 数字字面量
+      if (node.type === 'Literal' && typeof node.value === 'number') {
+        return true
+      }
+
+      // 二元表达式：如果操作数都是数字或数字表达式，返回数字
+      if (node.type === 'BinaryExpression') {
+        const left = node.left
+        const right = node.right
+        // 如果两个操作数都是数字字面量，则是数字运算
+        if (
+          left?.type === 'Literal' &&
+          typeof left.value === 'number' &&
+          right?.type === 'Literal' &&
+          typeof right.value === 'number'
+        ) {
+          return true
+        }
+        // 如果操作符是算术运算符（+、-、*、/、%），且至少有一个操作数是数字字面量
+        // 则可能是数字运算（但 + 也可能是字符串拼接，这里保守处理）
+        const arithmeticOps = ['+', '-', '*', '/', '%', '**']
+        if (
+          arithmeticOps.includes(node.operator) &&
+          ((left?.type === 'Literal' && typeof left.value === 'number') ||
+            (right?.type === 'Literal' && typeof right.value === 'number'))
+        ) {
+          // 对于 + 运算符，如果两个操作数都是数字字面量，则是数字运算
+          if (node.operator === '+') {
+            if (
+              (left?.type === 'Literal' && typeof left.value === 'number') &&
+              (right?.type === 'Literal' && typeof right.value === 'number')
+            ) {
+              return true
+            }
+          } else {
+            // 其他算术运算符，如果至少有一个操作数是数字，则可能是数字运算
+            return true
+          }
+        }
+      }
+
+      return false
+    }
+
+    /**
      * 判断表达式是否可能返回文本内容
      */
     function isTextLikeExpression(node) {
@@ -102,6 +152,11 @@ export default {
         return isTranslatableText(node.value)
       }
 
+      // 数字字面量不是文本表达式
+      if (node.type === 'Literal' && typeof node.value === 'number') {
+        return false
+      }
+
       // 模板字符串
       if (node.type === 'TemplateLiteral') {
         return true
@@ -109,6 +164,24 @@ export default {
 
       // 数组方法调用和函数调用不应该被当作文本表达式
       if (isArrayMethodCall(node) || isFunctionCall(node)) {
+        return false
+      }
+
+      // 二元表达式：如果操作数都是数字，返回 false（数字运算）
+      if (node.type === 'BinaryExpression') {
+        // 简单检查：如果两个操作数都是数字字面量，则返回数字
+        const left = node.left
+        const right = node.right
+        if (
+          left?.type === 'Literal' &&
+          typeof left.value === 'number' &&
+          right?.type === 'Literal' &&
+          typeof right.value === 'number'
+        ) {
+          return false
+        }
+        // 其他情况（如字符串拼接），可能返回文本
+        // 为了安全，对于复杂的二元表达式，不当作文本表达式
         return false
       }
 
@@ -169,7 +242,12 @@ export default {
         } else if (child.type === 'JSXExpressionContainer') {
           const expression = child.expression
           // 如果表达式返回 JSX 或是函数调用，不算文本表达式
-          if (!expressionReturnsJSX(expression) && !isFunctionCall(expression)) {
+          if (expressionReturnsJSX(expression) || isFunctionCall(expression)) {
+            // 不算文本表达式
+          } else if (isNumericExpression(expression)) {
+            // 数字表达式不算文本表达式
+          } else {
+            // 其他表达式（包括 Identifier、MemberExpression、字符串字面量等）可能返回文本
             hasTextExpression = true
           }
         }
@@ -278,20 +356,20 @@ export default {
      */
     function handleLogicalExpression(expression, child) {
       const operator = expression.operator
-      const left = getExpressionText(expression.left)
-      const rightWrapped = wrapExpressionIfNeeded(expression.right)
+                const left = getExpressionText(expression.left)
+                const rightWrapped = wrapExpressionIfNeeded(expression.right)
 
-      const originalRight = getExpressionText(expression.right)
-      if (rightWrapped !== originalRight) {
-        const fixCode = `{${left} ${operator} ${rightWrapped}}`
-        context.report({
-          node: child,
-          messageId: 'expressionTextNode',
-          data: { wrapperElement },
-          fix(fixer) {
-            return fixer.replaceText(child, fixCode)
-          },
-        })
+                const originalRight = getExpressionText(expression.right)
+                if (rightWrapped !== originalRight) {
+                  const fixCode = `{${left} ${operator} ${rightWrapped}}`
+                  context.report({
+                    node: child,
+                    messageId: 'expressionTextNode',
+                    data: { wrapperElement },
+                    fix(fixer) {
+                      return fixer.replaceText(child, fixCode)
+                    },
+                  })
         return true
       }
       return false
@@ -301,47 +379,47 @@ export default {
      * 处理三元表达式的修复
      */
     function handleConditionalExpression(expression, child) {
-      const test = getExpressionText(expression.test)
-      const originalConsequent = getExpressionText(expression.consequent)
-      const originalAlternate = getExpressionText(expression.alternate)
+                const test = getExpressionText(expression.test)
+                const originalConsequent = getExpressionText(expression.consequent)
+                const originalAlternate = getExpressionText(expression.alternate)
 
-      // 检查原始代码是否有括号（用于嵌套表达式）
-      const consequentHasParens = originalConsequent.startsWith('(') && originalConsequent.endsWith(')')
-      const alternateHasParens = originalAlternate.startsWith('(') && originalAlternate.endsWith(')')
+                // 检查原始代码是否有括号（用于嵌套表达式）
+                const consequentHasParens = originalConsequent.startsWith('(') && originalConsequent.endsWith(')')
+                const alternateHasParens = originalAlternate.startsWith('(') && originalAlternate.endsWith(')')
 
-      const consequentWrapped = wrapExpressionIfNeeded(
-        expression.consequent,
-        expression.consequent.type === 'ConditionalExpression' && !consequentHasParens
-      )
-      const alternateWrapped = wrapExpressionIfNeeded(
-        expression.alternate,
-        expression.alternate.type === 'ConditionalExpression' && !alternateHasParens
-      )
+                const consequentWrapped = wrapExpressionIfNeeded(
+                  expression.consequent,
+                  expression.consequent.type === 'ConditionalExpression' && !consequentHasParens
+                )
+                const alternateWrapped = wrapExpressionIfNeeded(
+                  expression.alternate,
+                  expression.alternate.type === 'ConditionalExpression' && !alternateHasParens
+                )
 
-      // 检查是否有任何分支需要包裹
-      const needsFix = consequentWrapped !== originalConsequent || alternateWrapped !== originalAlternate
+                // 检查是否有任何分支需要包裹
+                const needsFix = consequentWrapped !== originalConsequent || alternateWrapped !== originalAlternate
 
-      if (needsFix) {
-        // 如果原始代码有括号，保留括号格式
-        let finalConsequent = consequentWrapped
-        let finalAlternate = alternateWrapped
+                if (needsFix) {
+                  // 如果原始代码有括号，保留括号格式
+                  let finalConsequent = consequentWrapped
+                  let finalAlternate = alternateWrapped
 
-        if (consequentHasParens && !finalConsequent.startsWith('(')) {
-          finalConsequent = `(${finalConsequent})`
-        }
-        if (alternateHasParens && !finalAlternate.startsWith('(')) {
-          finalAlternate = `(${finalAlternate})`
-        }
+                  if (consequentHasParens && !finalConsequent.startsWith('(')) {
+                    finalConsequent = `(${finalConsequent})`
+                  }
+                  if (alternateHasParens && !finalAlternate.startsWith('(')) {
+                    finalAlternate = `(${finalAlternate})`
+                  }
 
-        const fixCode = `{${test} ? ${finalConsequent} : ${finalAlternate}}`
-        context.report({
-          node: child,
-          messageId: 'expressionTextNode',
-          data: { wrapperElement },
-          fix(fixer) {
-            return fixer.replaceText(child, fixCode)
-          },
-        })
+                  const fixCode = `{${test} ? ${finalConsequent} : ${finalAlternate}}`
+                  context.report({
+                    node: child,
+                    messageId: 'expressionTextNode',
+                    data: { wrapperElement },
+                    fix(fixer) {
+                      return fixer.replaceText(child, fixCode)
+                    },
+                  })
         return true
       }
       return false
@@ -403,22 +481,22 @@ export default {
             // 处理三元表达式
             else if (expression.type === 'ConditionalExpression') {
               if (handleConditionalExpression(expression, child)) continue
-            }
+                }
             // 处理其他表达式（字符串字面量、模板字符串等）
             else if (isTextLikeExpression(expression) && expression.type !== 'Identifier') {
-              const exprText = getExpressionText(expression)
-              const fixCode = wrapInElement(`{${exprText}}`)
-              context.report({
-                node: child,
-                messageId: 'expressionTextNode',
-                data: { wrapperElement },
-                fix(fixer) {
-                  return fixer.replaceText(child, fixCode)
-                },
-              })
+                const exprText = getExpressionText(expression)
+                const fixCode = wrapInElement(`{${exprText}}`)
+                context.report({
+                  node: child,
+                  messageId: 'expressionTextNode',
+                  data: { wrapperElement },
+                  fix(fixer) {
+                    return fixer.replaceText(child, fixCode)
+                  },
+                })
+              }
             }
           }
-        }
       },
     }
   },
