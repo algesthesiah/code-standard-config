@@ -15,4 +15,3 @@ jobs:
           echo "Hello World!"
           echo "GitHub Actions is working!"
           echo "Current time: $(date)"
-
