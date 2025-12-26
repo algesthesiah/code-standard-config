@@ -2,17 +2,19 @@ name: Hello World
 
 on:
   push:
-    branches: ["**"]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   hello:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Say Hello
         run: |
           echo "Hello World!"
           echo "GitHub Actions is working!"
-          echo "Timestamp: $(date)"
-          echo "Branch: ${{ github.ref }}"
-          echo "Event: ${{ github.event_name }}"
+          echo "Current time: $(date)"
